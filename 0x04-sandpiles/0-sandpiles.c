@@ -1,98 +1,115 @@
-#include <stdlib.h>
 #include <stdio.h>
-
 #include "sandpiles.h"
 
 /**
- * sandpiles_sum - fn sum 2 sandpiles list
- * @grid1: sandpile 1
- * @grid2: sandpile 2
- * Return: None
+ * matrix_output - sand_pile output
+ *
+ * @sand_pile: sandpile
+ *
+ * Return: void
  */
+
+static void matrix_output(int sand_pile[3][3])
+{
+    int index, index_nest;
+
+    for (index = 0; index < 3; index++)
+    {
+        for (index_nest = 0; index_nest < 3; index_nest++)
+        {
+            if (index_nest)
+                printf(" ");
+            printf("%d", sand_pile[index][index_nest]);
+        }
+        printf("\n");
+    }
+}
+
+/**
+ * point_sand - full sand
+ *
+ * @sand_pile: sandpile pointer
+ *
+ * Return: bool stable
+ */
+
+void point_sand(int *sand_pile)
+{
+    int new[3][3] = {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}};
+    int index = 0;
+
+    for (; index < 9; index++)
+    {
+        if (*(sand_pile + index) > 3)
+        {
+            *(sand_pile + index) -= 4;
+            if (index / 3 != 0)
+                new[(index / 3) - 1][index % 3] += 1;
+            if (index / 3 != 2)
+                new[(index / 3) + 1][index % 3] += 1;
+            if (index % 3 != 0)
+                new[index / 3][(index % 3) - 1] += 1;
+            if (index % 3 != 2)
+                new[index / 3][(index % 3) + 1] += 1;
+        }
+        new[index / 3][index % 3] += *(sand_pile + index);
+    }
+    for (index = 0; index < 9; index++)
+    {
+        *(sand_pile + index) = new[index / 3][index % 3];
+    }
+}
+
+/**
+ * checker - is sandpile stable
+ *
+ * @sand_pile: sandpile
+ *
+ * Return: bool stable
+ */
+int checker(int *sand_pile)
+{
+    int index, res_check = 0;
+
+    for (index = 0; index < 9; index++)
+    {
+        if (*(sand_pile + index) > 3)
+            res_check = 1;
+    }
+    return (res_check);
+}
+
+/**
+ * sandpiles_sum - Sum sandpiles
+ *
+ * @grid1: sandpile
+ * @grid2: sandpile
+ *
+ * Return: void
+ */
+
 void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 {
-	int i, j, x = 0;
+    int *grid3 = &grid1[0][0];
+    int index, index_nest, res_check = 0;
 
-	for (i = 0; i < 3; i++)
-	{
-		for (j = 0; j < 3; j++)
-		{
-			grid1[i][j] = grid1[i][j] + grid2[i][j];
-		}
-	}
-	printf("=\n");
-	print_grid(grid1);
-	x = check_non_stable(grid1);
-	if (x != 0)
-	{
-		while (x != 0)
-		{
-			toppling(grid1);
-			x = check_non_stable(grid1);
-			if (x != 0)
-			{
-				printf("=\n");
-				print_grid(grid1);
-			}
-		}
-	}
-}
-
-/**
- * check_non_stable - fn check  is stable
- * @grid1: sandpile 1
- * Return: 1 if not stable otherwise 0
- */
-int check_non_stable(int grid1[3][3])
-{
-	int i, j, x = 0;
-
-	for (i = 0; i < 3; i++)
-	{
-		for (j = 0; j < 3; j++)
-		{
-			if (grid1[i][j] > 3)
-			x = 1;
-		}
-	}
-	return (x);
-}
-
-/**
- * toppling - fn toppling for sandpiles
- * @grid1: sandpile 1
- * Return: None
- */
-void toppling(int grid1[3][3])
-{
-	int i, j, possibly[3][3];
-
-	for (i = 0; i < 3; i++)
-	{
-		for (j = 0; j < 3; j++)
-		{
-			if (grid1[i][j] > 3)
-				possibly[i][j] = 1;
-			else
-				possibly[i][j] = 0;
-		}
-	}
-	for (i = 0; i < 3; i++)
-	{
-		for (j = 0; j < 3; j++)
-		{
-			if (possibly[i][j] == 1)
-			{
-				grid1[i][j] = grid1[i][j] - 4;
-				if (i - 1 >= 0)
-					grid1[i - 1][j] = grid1[i - 1][j] + 1;
-				if (i + 1 <= 2)
-					grid1[i + 1][j] = grid1[i + 1][j] + 1;
-				if (j - 1 >= 0)
-					grid1[i][j - 1] = grid1[i][j - 1] + 1;
-        if (j + 1 <= 2)
-					grid1[i][j + 1] = grid1[i][j + 1] + 1;
-			}
-		}
-	}
+    for (index = 0; index < 3; index++)
+    {
+        for (index_nest = 0; index_nest < 3; index_nest++)
+        {
+            grid1[index][index_nest] += grid2[index][index_nest];
+            if (grid1[index][index_nest] > 3)
+                res_check = 1;
+        }
+    }
+    while (res_check)
+    {
+        printf("=\n");
+        matrix_output(grid1);
+        point_sand(grid3);
+        res_check = checker(grid3);
+    }
 }

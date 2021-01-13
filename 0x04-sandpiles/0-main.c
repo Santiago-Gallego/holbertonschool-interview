@@ -3,9 +3,7 @@
 
 #include "sandpiles.h"
 
-//gcc -Wall -Wextra -Werror -pedantic 1-main.c 0-sandpiles.c -o 0-sandpiles
-
-void print_grid_sum(int grid1[3][3], int grid2[3][3])
+static void print_grid_sum(int grid1[3][3], int grid2[3][3])
 {
     int i, j;
 
@@ -30,7 +28,7 @@ void print_grid_sum(int grid1[3][3], int grid2[3][3])
     }
 }
 
-void print_grid(int grid[3][3])
+static void print_grid(int grid[3][3])
 {
     int i, j;
 
@@ -56,13 +54,11 @@ int main(void)
     int grid1[3][3] = {
         {3, 3, 3},
         {3, 3, 3},
-        {3, 3, 3}
-    };
+        {3, 3, 3}};
     int grid2[3][3] = {
         {1, 3, 1},
         {3, 3, 3},
-        {1, 3, 1}
-    };
+        {1, 3, 1}};
 
     print_grid_sum(grid1, grid2);
 
