@@ -3,11 +3,8 @@
 
 #include "sandpiles.h"
 
-<<<<<<< HEAD
-static void print_grid_sum(int grid1[3][3], int grid2[3][3])
-=======
+
 void print_grid_sum(int grid1[3][3], int grid2[3][3])
->>>>>>> dba61202508075fadcb8ef8617562963451d7f76
 {
     int i, j;
 
@@ -32,7 +29,7 @@ void print_grid_sum(int grid1[3][3], int grid2[3][3])
     }
 }
 
-static void print_grid(int grid[3][3])
+void print_grid(int grid[3][3])
 {
     int i, j;
 
@@ -56,13 +53,15 @@ static void print_grid(int grid[3][3])
 int main(void)
 {
     int grid1[3][3] = {
-        {3, 3, 3},
-        {3, 3, 3},
-        {3, 3, 3}};
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}
+    };
     int grid2[3][3] = {
-        {1, 3, 1},
         {3, 3, 3},
-        {1, 3, 1}};
+        {3, 3, 3},
+        {3, 3, 3}
+    };
 
     print_grid_sum(grid1, grid2);
 
