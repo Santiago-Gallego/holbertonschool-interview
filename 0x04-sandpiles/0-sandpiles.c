@@ -4,7 +4,7 @@
 /**
  * matrix_output - sand_pile output
  *
- * @sand_pile: sandpile
+ * @sand_pile: matrix_output sandpile
  *
  * Return: void
  */
@@ -28,9 +28,9 @@ static void matrix_output(int sand_pile[3][3])
 /**
  * point_sand - full sand
  *
- * @sand_pile: sandpile pointer
+ * @sand_pile: sandpile pointer 
  *
- * Return: bool stable
+ * Return: bool stable 1 or 0
  */
 
 void point_sand(int *sand_pile)
@@ -68,7 +68,7 @@ void point_sand(int *sand_pile)
  *
  * @sand_pile: sandpile
  *
- * Return: bool stable
+ * Return: 1 or 0
  */
 int checker(int *sand_pile)
 {
@@ -85,8 +85,8 @@ int checker(int *sand_pile)
 /**
  * sandpiles_sum - Sum sandpiles
  *
- * @grid1: sandpile
- * @grid2: sandpile
+ * @grid1: sandpile 1
+ * @grid2: sandpile 2
  *
  * Return: void
  */
