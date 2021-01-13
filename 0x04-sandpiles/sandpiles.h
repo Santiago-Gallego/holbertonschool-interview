@@ -8,4 +8,4 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3]);
 int check_non_stable(int gridx[3][3]);
 void toppling(int gridx[3][3]);
 
-#endif /* _SANDPILES_ */
+#endif 
