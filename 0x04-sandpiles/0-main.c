@@ -3,11 +3,7 @@
 
 #include "sandpiles.h"
 
-<<<<<<< HEAD
 static void print_grid_sum(int grid1[3][3], int grid2[3][3])
-=======
-void print_grid_sum(int grid1[3][3], int grid2[3][3])
->>>>>>> dba61202508075fadcb8ef8617562963451d7f76
 {
     int i, j;
 
