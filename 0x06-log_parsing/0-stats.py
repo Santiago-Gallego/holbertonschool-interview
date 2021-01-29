@@ -1,41 +1,41 @@
 #!/usr/bin/python3
-""" Script that reads stdin line by line and computes metrics."""
+"""
+reads stdin line by line and computes metrics
+"""
 
 import sys
 
-dlist = {"size": 0,
-         "lines": 1}
+STATUS = {'200': 0,
+          '301': 0,
+          '400': 0,
+          '401': 0,
+          '403': 0,
+          '404': 0,
+          '405': 0,
+          '500': 0}
 
-errors = {"200": 0, "301": 0, "400": 0, "401": 0,
-          "403": 0, "404": 0, "405": 0, "500": 0}
-
-
-def printf():
-    """ Print codes and numbers"""
-    print("File size: {}".format(dlist["size"]))
-    for key in sorted(errors.keys()):
-        if errors[key] != 0:
-            print("{}: {}".format(key, errors[key]))
-
-
-def datasize(data):
-    """ Count file codes and size"""
-    dlist["size"] += int(data[-1])
-    if data[-2] in errors:
-        errors[data[-2]] += 1
-
-
-if __name__ == "__main__":
-    try:
-        for line in sys.stdin:
-            try:
-                datasize(line.split(" "))
-            except:
-                pass
-            if dlist["lines"] % 10 == 0:
-                printf()
-            dlist["lines"] += 1
-    except KeyboardInterrupt:
-        printf()
-        raise
-    printf()
+total_size = 0
+n = 0
+try:
+    for argument in sys.stdin:
+        arguments = argument.split(" ")
+        if len(arguments) > 2:
+            status = arguments[-2]
+            file_size = int(arguments[-1])
+            if status in STATUS:
+                STATUS[status] += 1
+            total_size += file_size
+            n += 1
+            if n == 10:
+                print("File size: {:d}".format(total_size))
+                for key, value in sorted(STATUS.items()):
+                    if value != 0:
+                        print("{}: {:d}".format(key, value))
+                n = 0
+except KeyboardInterrupt:
+    pass
+finally:
+    print("File size: {:d}".format(total_size))
+    for key, value in sorted(STATUS.items()):
+        if value != 0:
+            print("{}: {:d}".format(key, value))
