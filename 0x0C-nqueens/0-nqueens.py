@@ -2,89 +2,49 @@
 """
 N-queens
 """
+import sys
 
 
-class QueenChessBoard:
-    def __init__(self, size):
-        self.size = size
-        self.columns = []
+def decode(list):
+    """
+    0. N queens
+    fn decode for square NxN
+    """
+    try:
+        if len(list[0]) != 2:
+            print("Usage: nqueens N")
+            exit(1)
+        NxN = int(list[0][1])
+        if NxN < 4:
+            print("N must be at least 4")
+            exit(1)
 
-    def place_in_next_row(self, column):
-        self.columns.append(column)
+        col = list[1]
+        listThreats = list[2]
+        for row in range(NxN):
+            nonAttacking = 1
+            for move in listThreats:
+                if move[1] == row:
+                    nonAttacking = 0
+                    break
+                if col - row == move[0] - move[1]:
+                    nonAttacking = 0
+                    break
+                if row - move[1] == move[0] - col:
+                    nonAttacking = 0
+                    break
+            if nonAttacking == 1:
+                listThreats.append([col, row])
+                if NxN - 1 != col:
+                    decode([list[0], col + 1, listThreats])
+                else:
+                    print(listThreats)
+                del listThreats[-1]
 
-    def remove_in_current_row(self):
-        return self.columns.pop()
-
-    def is_this_column_safe_in_next_row(self, column):
-        row = len(self.columns)
-        for queen_column in self.columns:
-            if column == queen_column:
-                return False
-
-        for queen_row, queen_column in enumerate(self.columns):
-            if queen_column - queen_row == column - row:
-                return False
-
-        for queen_row, queen_column in enumerate(self.columns):
-            if ((self.size - queen_column) - queen_row ==
-                    (self.size - column) - row):
-                return False
-
-        return True
-
-    def display(self):
-        lista = []
-        for row in range(self.size):
-            for column in range(self.size):
-                if column == self.columns[row]:
-                    lista.append([row, column])
-        print(lista, end='')
-
-
-def solve_queen(size):
-    board = QueenChessBoard(size)
-    number_of_solutions = 0
-    row = 0
-    column = 0
-
-    while True:
-        while column < size:
-            if board.is_this_column_safe_in_next_row(column):
-                board.place_in_next_row(column)
-                row += 1
-                column = 0
-                break
-            else:
-                column += 1
-
-        if (column == size or row == size):
-            if row == size:
-                board.display()
-                print()
-                number_of_solutions += 1
-                board.remove_in_current_row()
-                row -= 1
-
-            try:
-                prev_column = board.remove_in_current_row()
-            except IndexError:
-                break
-
-            row -= 1
-            column = 1 + prev_column
-
-
-if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) != 2:
-        print("Usage: nqueens N")
-        sys.exit(1)
-    if sys.argv[1].isdigit() is False:
+    except ValueError:
         print("N must be a number")
-        sys.exit(1)
-    if int(sys.argv[1]) < 4:
-        print("N must be at least 4")
-        sys.exit(1)
+        exit(1)
 
-    solve_queen(int(sys.argv[1]))
+
+# run init function for default
+decode([sys.argv, 0, []])
