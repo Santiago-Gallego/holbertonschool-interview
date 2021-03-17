@@ -1,12 +1,12 @@
 #!/usr/bin/python3
-'''Module N Queens
+"""Module N Queens
    b: The b state.
-'''
+"""
 import sys
 
 
 def cposition(b, row, col):
-    '''Checks position'''
+    """Checks position"""
     for c in range(col):
         if b[c] is row or abs(b[c] - row) is abs(c - col):
             return False
@@ -14,7 +14,7 @@ def cposition(b, row, col):
 
 
 def check(b, col):
-    '''backtracking '''
+    """backtracking """
     n = len(b)
     if col is n:
         print(str([[c, b[c]] for c in range(n)]))
