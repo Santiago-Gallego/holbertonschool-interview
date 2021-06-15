@@ -21,8 +21,8 @@ def canUnlockAll(boxes):
         return False
 
     n_boxes = len(boxes)
-    unlocked_lst = ["Locked"] * n_boxes  # List of all unlocked boxes
-    unlocked_lst[0] = "Unlocked"  # The first box boxes[0] is unlocked
+    unlocked_lst = ["Locked"] * n_boxes
+    unlocked_lst[0] = "Unlocked"
 
     next = boxes[0]
     while (unlocked_lst.count("Unlocked") < n_boxes and next is not None):
@@ -30,7 +30,7 @@ def canUnlockAll(boxes):
         next = go_open(open_me, boxes, unlocked_lst)
 
     if (unlocked_lst.count("Unlocked") == n_boxes):
-        return True  # All boxes were open
+        return True
     return False
 
 
@@ -47,25 +47,25 @@ def go_open(open_me, boxes, unlocked_lst):
         None: If open_me is None or empty
     """
 
-    if (open_me is None):  # There are no current boxes to be opened
+    if (open_me is None):
         return None
 
-    elif (len(open_me) == 0):  # Empty. There are no current boxes to open
+    elif (len(open_me) == 0):
         return None
 
-    elif (len(open_me) == 1):  # 1 box to be open.
+    elif (len(open_me) == 1):
         i = open_me[0]
-        if (len(boxes) <= i):  # crazy position
+        if (len(boxes) <= i):
             return None
-        if (unlocked_lst[i] == "Unlocked"):  # Already been there
+        if (unlocked_lst[i] == "Unlocked"):
             return None
         else:
             unlocked_lst[i] = "Unlocked"
-            if(boxes[i] == open_me):  # Same position
+            if(boxes[i] == open_me):
                 return None
         return boxes[i]
 
-    else:  # More than 1 box to be opened
+    else:
         next_boxes = [None] * len(open_me)
         i = 0
         for box_i in open_me:
@@ -76,8 +76,8 @@ def go_open(open_me, boxes, unlocked_lst):
             next_boxes[i] = go_open(open_me_i, boxes, unlocked_lst)
             i += 1
 
-        if len(next_boxes) == 0:  # No more routes to take
+        if len(next_boxes) == 0:
             return None
-        if next_boxes.count(None) == i:  # All routes are taken
+        if next_boxes.count(None) == i:
             return None
         return next_boxes
