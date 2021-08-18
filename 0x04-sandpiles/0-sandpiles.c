@@ -1,115 +1,105 @@
-#include <stdio.h>
 #include "sandpiles.h"
 
 /**
- * matrix_output - sand_pile output
- *
- * @sand_pile: matrix_output sandpile
- *
- * Return: void
- */
-
-static void matrix_output(int sand_pile[3][3])
+  * print_grid - Print 3x3 grid
+  * @grid: 3x3 grid
+  *
+  */
+static void print_grid(int grid[3][3])
 {
-    int index, index_nest;
+	int i, j;
 
-    for (index = 0; index < 3; index++)
-    {
-        for (index_nest = 0; index_nest < 3; index_nest++)
-        {
-            if (index_nest)
-                printf(" ");
-            printf("%d", sand_pile[index][index_nest]);
-        }
-        printf("\n");
-    }
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
+			if (j)
+				printf(" ");
+			printf("%d", grid[i][j]);
+		}
+	printf("\n");
+	}
 }
 
 /**
- * point_sand - full sand
- *
- * @sand_pile: sandpile pointer 
- *
- * Return: bool stable 1 or 0
- */
+  * sum - sum
+  * @src: sandpile
+  * @dest: sandpile
+  */
 
-void point_sand(int *sand_pile)
+void sum(int src[3][3], int dest[3][3])
 {
-    int new[3][3] = {
-        {0, 0, 0},
-        {0, 0, 0},
-        {0, 0, 0}};
-    int index = 0;
+	int x, y;
 
-    for (; index < 9; index++)
-    {
-        if (*(sand_pile + index) > 3)
-        {
-            *(sand_pile + index) -= 4;
-            if (index / 3 != 0)
-                new[(index / 3) - 1][index % 3] += 1;
-            if (index / 3 != 2)
-                new[(index / 3) + 1][index % 3] += 1;
-            if (index % 3 != 0)
-                new[index / 3][(index % 3) - 1] += 1;
-            if (index % 3 != 2)
-                new[index / 3][(index % 3) + 1] += 1;
-        }
-        new[index / 3][index % 3] += *(sand_pile + index);
-    }
-    for (index = 0; index < 9; index++)
-    {
-        *(sand_pile + index) = new[index / 3][index % 3];
-    }
+	for (x = 0; x < 3; x++)
+		for (y = 0; y < 3; y++)
+		{
+			dest[x][y] = src[x][y];
+		}
+}
+/**
+  * tst - tst
+  * @arr: matrix
+  * Return: 0
+  */
+int tst(int arr[3][3])
+{
+	int x, y;
+
+	for (x = 0; x < 3; x++)
+	{
+		for (y = 0; y < 3; y++)
+		{
+			if (arr[x][y] > 3)
+				return (1);
+		}
+	}
+	return (0);
 }
 
-/**
- * checker - is sandpile stable
- *
- * @sand_pile: sandpile
- *
- * Return: 1 or 0
- */
-int checker(int *sand_pile)
-{
-    int index, res_check = 0;
-
-    for (index = 0; index < 9; index++)
-    {
-        if (*(sand_pile + index) > 3)
-            res_check = 1;
-    }
-    return (res_check);
-}
 
 /**
- * sandpiles_sum - Sum sandpiles
- *
- * @grid1: sandpile 1
- * @grid2: sandpile 2
- *
- * Return: void
- */
-
+  * sandpiles_sum - function that computes the sum of two sandpiles
+  * @grid1: matrix
+  * @grid2: matrix
+  */
 void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 {
-    int *grid3 = &grid1[0][0];
-    int index, index_nest, res_check = 0;
 
-    for (index = 0; index < 3; index++)
-    {
-        for (index_nest = 0; index_nest < 3; index_nest++)
-        {
-            grid1[index][index_nest] += grid2[index][index_nest];
-            if (grid1[index][index_nest] > 3)
-                res_check = 1;
-        }
-    }
-    while (res_check)
-    {
-        printf("=\n");
-        matrix_output(grid1);
-        point_sand(grid3);
-        res_check = checker(grid3);
-    }
+	int x;
+	int y;
+	int referenceGrid[3][3];
+
+	for (x = 0; x < 3; x++)
+		for (y = 0; y < 3; y++)
+			grid1[x][y] = grid1[x][y] + grid2[x][y];
+	if (!tst(grid1))
+		return;
+
+	printf("=\n");
+	print_grid(grid1);
+	while ("2021!")
+	{
+		sum(grid1, referenceGrid);
+		for (x = 0; x < 3; x++)
+			for (y = 0; y < 3; y++)
+			{
+				if (referenceGrid[x][y] > 3)
+				{
+					grid1[x][y] = grid1[x][y] - 4;
+					if (x - 1 >= 0)
+						grid1[x - 1][y] += 1;
+					if (x + 1 <= 2)
+						grid1[x + 1][y] += 1;
+					if (y - 1 >= 0)
+						grid1[x][y - 1] += 1;
+					if (y + 1 <= 2)
+						grid1[x][y + 1] += 1;
+				}
+			}
+		if (!tst(grid1))
+			break;
+		printf("=\n");
+		print_grid(grid1);
+	}
 }
