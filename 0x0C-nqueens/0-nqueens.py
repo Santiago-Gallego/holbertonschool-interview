@@ -1,71 +1,107 @@
 #!/usr/bin/python3
-
 """
-N queens problem
+N queens
 """
 
 import sys
 
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print('Usage: nqueens N')
-        sys.exit(1)
 
-    try:
-        n_q = int(sys.argv[1])
-    except BaseException:
-        print('N must be a number')
-        sys.exit(1)
+def is_not_safe_position(board, i, j, r):
+    """
+    Method that determines if position (i, j) on the chessboard is safe
+    to allocate a queen.
+    Args:
+        - board (list):     list
+        - i     (int):      x coordinate to be evaluated
+        - j     (int):      y coordinate to be evaluated
+        - r     (int):      current row
+    Returns:
+        True    (bool):     in case it is safe
+        False   (bool):     in case it is not safe
+    """
 
-    if n_q < 4:
-        print('N must be at least 4')
-        sys.exit(1)
-
-    board = [[0 for col in range(n_q)] for row in range(n_q)]
-
-    def main():
-        b = [[0 for j in range(n_q)] for i in range(n_q)]
-        recursive_func(b, 0)
-        return
-
-    def recursive_func(b, c):
-        if (c == n_q):
-            solution(b)
-            return True
-        ret = False
-        for i in range(n_q):
-            if (validate_pos(b, i, c)):
-                b[i][c] = 1
-                ret = recursive_func(b, c + 1) or ret
-                b[i][c] = 0
-        return ret
-
-    def validate_pos(b, r, c):
-        for i in range(c):
-            if (b[r][i]):
-                return False
-        i = r
-        j = c
-        while i >= 0 and j >= 0:
-            if(b[i][j]):
-                return False
-            i = i - 1
-            j = j - 1
-        i = r
-        j = c
-        while j >= 0 and i < n_q:
-            if(b[i][j]):
-                return False
-            i = i + 1
-            j = j - 1
+    # Is board[i] in line of attack ?
+    if (board[i] == j) or (board[i] == j - i + r) or (board[i] == i - r + j):
         return True
+    return False
 
-    def solution(b):
-        solve = []
-        for i in range(n_q):
-            for j in range(n_q):
-                if(b[i][j] == 1):
-                    solve.append([i, j])
-        print(solve)
-        solve.clear()
-    main()
+
+def find_positions(board, row, n):
+    """
+    Recursive method that finds all safe position (i, j) where n queens
+    can be allocated.
+    Args:
+        - board (list):     list
+        - row   (int):      current row
+        - n     (int):      number of queens to be allocated
+    Returns:
+        -       (lists):    lists of all possible solutions
+    """
+
+    if row == n:
+        print_chess_board(board, n)
+
+    else:
+        for j in range(n):
+            legal = True
+            for i in range(row):
+                if is_not_safe_position(board, i, j, row):
+                    legal = False
+            if legal:
+                board[row] = j
+                find_positions(board, row + 1, n)
+
+
+def print_chess_board(board, n):
+    """
+    Method that generates the list of positions (i, j) where n queens
+    were allocated.
+    Args:
+        - board (list):     list
+        - n     (int):      number of queens to be allocated
+    Returns:
+        - nothing
+    """
+
+    b = []
+
+    for i in range(n):
+        for j in range(n):
+            if j == board[i]:
+                b.append([i, j])
+    print(b)
+
+
+def create_chess_board(size):
+    """
+    Method that generates a list of zeros
+    Args:
+        - size  (int):      number of queens to be allocated
+    Returns:
+        - board (list)
+    """
+
+    return [0 * size for i in range(size)]
+
+
+# 1. Read and validate size of the board
+if len(sys.argv) != 2:
+    print("Usage: nqueens N")
+    exit(1)
+
+try:
+    n = int(sys.argv[1])
+except BaseException:
+    print("N must be a number")
+    exit(1)
+
+if (n < 4):
+    print("N must be at least 4")
+    exit(1)
+
+# 2. Generate the board
+board = create_chess_board(int(n))
+
+# 3. Find the solutions
+row = 0
+find_positions(board, row, int(n))
