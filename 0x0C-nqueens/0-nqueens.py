@@ -1,90 +1,79 @@
 #!/usr/bin/python3
 """
-N-queens
+N queens puzzle is the challenge of placing N non-attacking queens
 """
+import sys
 
 
-class QueenChessBoard:
-    def __init__(self, size):
-        self.size = size
-        self.columns = []
-
-    def place_in_next_row(self, column):
-        self.columns.append(column)
-
-    def remove_in_current_row(self):
-        return self.columns.pop()
-
-    def is_this_column_safe_in_next_row(self, column):
-        row = len(self.columns)
-        for queen_column in self.columns:
-            if column == queen_column:
-                return False
-
-        for queen_row, queen_column in enumerate(self.columns):
-            if queen_column - queen_row == column - row:
-                return False
-
-        for queen_row, queen_column in enumerate(self.columns):
-            if ((self.size - queen_column) - queen_row ==
-                    (self.size - column) - row):
-                return False
-
-        return True
-
-    def display(self):
-        lista = []
-        for row in range(self.size):
-            for column in range(self.size):
-                if column == self.columns[row]:
-                    lista.append([row, column])
-        print(lista, end='')
+def printB(brd):
+    """
+    print board
+    """
+    r = []
+    for x in brd:
+        for c in x:
+            if c == 1:
+                r.append([brd.index(x), x.index(c)])
+    print(r)
 
 
-def solve_queen(size):
-    board = QueenChessBoard(size)
-    number_of_solutions = 0
-    row = 0
-    column = 0
+def is_safe(brd, row, col, n):
+    """
+    is_safe
+    """
+    for i in range(col):
 
-    while True:
-        while column < size:
-            if board.is_this_column_safe_in_next_row(column):
-                board.place_in_next_row(column)
-                row += 1
-                column = 0
-                break
-            else:
-                column += 1
+        if brd[row][i] + brd[row][i + 1] != 0:
+            return False
 
-        if (column == size or row == size):
-            if row == size:
-                board.display()
-                print()
-                number_of_solutions += 1
-                board.remove_in_current_row()
-                row -= 1
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if brd[i][j] == 1:
+            return False
 
-            try:
-                prev_column = board.remove_in_current_row()
-            except IndexError:
-                break
+    for i, j in zip(range(row, n, 1), range(col, -1, -1)):
+        if brd[i][j] == 1:
+            return False
 
-            row -= 1
-            column = 1 + prev_column
+    return True
 
 
-if __name__ == "__main__":
-    import sys
+def nqueen(brd, col, n):
+    """
+    nqueen
+    """
 
+    if (col >= n):
+        printB(brd)
+
+    for x in range(n):
+        if is_safe(brd, x, col, n):
+            brd[x][col] = 1
+            if nqueen(brd, col+1, n):
+                return True
+            brd[x][col] = 0
+
+    return False
+
+
+# initial run starting from the col 0!
+def main():
+    """
+    Main
+    """
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
-        sys.exit(1)
-    if sys.argv[1].isdigit() is False:
+        exit(1)
+    if sys.argv[1].isnumeric():
+        n = int(sys.argv[1])
+    else:
         print("N must be a number")
-        sys.exit(1)
-    if int(sys.argv[1]) < 4:
+        exit(1)
+    if n < 4:
         print("N must be at least 4")
-        sys.exit(1)
+        exit(1)
+    brd = [[0 for x in range(n)] for y in range(n)]
+    nqueen(brd, 0, n)
 
-    solve_queen(int(sys.argv[1]))
+
+if __name__ == '__main__':
+    main()
