@@ -1,14 +1,16 @@
 #include "sandpiles.h"
 
 /**
-  * print_grid - Print 3x3 grid
-  * @grid: 3x3 grid
-  *
-  */
-static void print_grid(int grid[3][3])
+ * print_grid - Function that prints the grid
+ * @grid: grid with shape of 3
+ * Return: Nothing (void)
+ */
+
+void print_grid(int grid[3][3])
 {
 	int i, j;
 
+	printf("=\n");
 	for (i = 0; i < 3; i++)
 	{
 		for (j = 0; j < 3; j++)
@@ -17,89 +19,96 @@ static void print_grid(int grid[3][3])
 				printf(" ");
 			printf("%d", grid[i][j]);
 		}
-	printf("\n");
+		printf("\n");
 	}
 }
 
 /**
-  * sum - sum
-  * @src: sandpile
-  * @dest: sandpile
-  */
+ * sum_grids - Function that sum two grids
+ * @grid1: sandpiles stable
+ * @grid2: sandpiles stable
+ * Return: Nothing (void)
+ */
 
-void sum(int src[3][3], int dest[3][3])
+void sum_grids(int grid1[3][3], int grid2[3][3])
 {
-	int x, y;
+	int i, j;
 
-	for (x = 0; x < 3; x++)
-		for (y = 0; y < 3; y++)
-		{
-			dest[x][y] = src[x][y];
-		}
+	for (i = 0; i < 3; i++)
+		for (j = 0; j < 3; j++)
+			grid1[i][j] = grid1[i][j] + grid2[i][j];
 }
-/**
-  * tst - tst
-  * @arr: matrix
-  * Return: 0
-  */
-int tst(int arr[3][3])
-{
-	int x, y;
 
-	for (x = 0; x < 3; x++)
+/**
+ * is_sandpile - Function for check if the grid is a sandpile
+ * @grid1: sandpiles stable
+ * Return: 1 for false, 0 for true
+ */
+
+int is_sandpile(int grid1[3][3])
+{
+	int i, j;
+
+	for (i = 0; i < 3; i++)
+		for (j = 0; j < 3; j++)
+			if (grid1[i][j] > 3)
+				return (0);
+	return (1);
+}
+
+/**
+ * convert_sandpile - Function that convert the grid into a sandpile
+ * @grid1: sandpiles stable
+ * Return: Nothing (void)
+ */
+
+void convert_sandpile(int grid1[3][3])
+{
+	int i, j;
+	int grid_aux[3][3];
+
+	/** starting the auxiliar in 0 */
+	for (i = 0; i < 3; i++)
+		for (j = 0; j < 3; j++)
+			grid_aux[i][j] = 0;
+
+	for (i = 0; i < 3; i++)
 	{
-		for (y = 0; y < 3; y++)
+		for (j = 0; j < 3; j++)
 		{
-			if (arr[x][y] > 3)
-				return (1);
+			/** verify if the number in the cell is > 3 */
+			if (grid1[i][j] > 3)
+			{
+				grid1[i][j] -= 4;
+				if ((i - 1 >= 0) && (i - 1 < 3))
+					grid_aux[i - 1][j] += 1;
+				if ((j - 1 >= 0) && (j - 1 < 3))
+					grid_aux[i][j - 1] += 1;
+				if ((i + 1 >= 0) && (i + 1 < 3))
+					grid_aux[i + 1][j] += 1;
+				if ((j + 1 >= 0) && (j + 1 < 3))
+					grid_aux[i][j + 1] += 1;
+			}
 		}
 	}
-	return (0);
+
+	sum_grids(grid1, grid_aux);
 }
 
-
 /**
-  * sandpiles_sum - function that computes the sum of two sandpiles
-  * @grid1: matrix
-  * @grid2: matrix
-  */
+ * sandpiles_sum - Function that computes the sum of two sandpiles
+ * @grid1: sandpiles stable
+ * @grid2: sandpiles stable
+ * Return: Nothing (void)
+ */
+
 void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 {
+	sum_grids(grid1, grid2);
 
-	int x;
-	int y;
-	int referenceGrid[3][3];
-
-	for (x = 0; x < 3; x++)
-		for (y = 0; y < 3; y++)
-			grid1[x][y] = grid1[x][y] + grid2[x][y];
-	if (!tst(grid1))
-		return;
-
-	printf("=\n");
-	print_grid(grid1);
-	while ("2021!")
+	while (!is_sandpile(grid1))
 	{
-		sum(grid1, referenceGrid);
-		for (x = 0; x < 3; x++)
-			for (y = 0; y < 3; y++)
-			{
-				if (referenceGrid[x][y] > 3)
-				{
-					grid1[x][y] = grid1[x][y] - 4;
-					if (x - 1 >= 0)
-						grid1[x - 1][y] += 1;
-					if (x + 1 <= 2)
-						grid1[x + 1][y] += 1;
-					if (y - 1 >= 0)
-						grid1[x][y - 1] += 1;
-					if (y + 1 <= 2)
-						grid1[x][y + 1] += 1;
-				}
-			}
-		if (!tst(grid1))
-			break;
-		printf("=\n");
 		print_grid(grid1);
+		convert_sandpile(grid1);
 	}
 }

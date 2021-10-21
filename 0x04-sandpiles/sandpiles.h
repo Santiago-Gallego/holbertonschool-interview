@@ -1,9 +1,14 @@
-#ifndef _HOLBERTON_H
-#define _HOLBERTON_H
+#ifndef SANDPILES_H
+#define SANDPILES_H
 
-#include <stddef.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 void sandpiles_sum(int grid1[3][3], int grid2[3][3]);
 
-#endif
+/** Auxiliar functions */
+void sum_grids(int grid1[3][3], int grid2[3][3]);
+int is_sandpile(int grid1[3][3]);
+void convert_sandpile(int grid1[3][3]);
+
+#endif /** SANDPILES_H */
