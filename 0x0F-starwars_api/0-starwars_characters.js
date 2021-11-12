@@ -1,37 +1,46 @@
 #!/usr/bin/node
+/*
+    Write a script that prints all characters of a Star Wars movie:
+
+    The first positional argument passed is the Movie ID -
+    example: 3 = “Return of the Jedi”
+    Display one character name per line in the same order
+    as the “characters” list in the /films/ endpoint
+    You must use the Star wars API
+    You must use the request module
+*/
+
+const args = process.argv.slice(2);
+if (args < 1) {
+  console.log('Error');
+  process.exit(1);
+}
+
+const episode = args[0];
+
+const url = 'https://swapi-api.hbtn.io/api/films/' + episode;
 const request = require('request');
-const url = `https://swapi-api.hbtn.io/api/films/${process.argv[2]}/`;
-
-// request(url, async function (error, response, body) {
-//   if (error) throw error;
-//   const characters = JSON.parse(body).characters;
-//   for (const c in characters) {
-//     const res = await new Promise((resolve, reject) => {
-//       request(characters[c], function (error, response, body) {
-//         if (error) throw error;
-//         resolve(JSON.parse(body).name);
-//       });
-//     });
-//     console.log(res);
-//   }
-// });
-
-request(url, async function (error, response, body) {
-  if (error) {
-    console.log(error);
-  } else {
-    const characters = JSON.parse(body).characters;
-    for (const c in characters) {
-      const res = await new Promise((resolve, reject) => {
-        request(characters[c], (error, res, html) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(JSON.parse(html).name);
-          }
-        });
-      });
-      console.log(res);
+let characters = [];
+request(url, (err, resp, body) => {
+  if (err || resp.statusCode !== 200) console.log(err);
+  else characters = JSON.parse(body).characters;
+  const size = Object.keys(characters).length;
+  const array = Array(size).fill();
+  let data = 0;
+  for (let i = 0; i < size; i++) {
+    request(characters[i], (erro, respo, bodys) => {
+      if (erro || respo.statusCode !== 200) console.log(erro);
+      else {
+        array[i] = JSON.parse(bodys).name;
+        data++;
+      }
+      if (data === size) {
+        for (let j = 0; j < size; j++) {
+          console.log(array[j]);
+        }
+      }
     }
+
+    );
   }
 });
