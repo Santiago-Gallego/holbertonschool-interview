@@ -1,4 +1,4 @@
-# 0x11. Heap sort
+## Heap sort
 
 ## Tasks
 
