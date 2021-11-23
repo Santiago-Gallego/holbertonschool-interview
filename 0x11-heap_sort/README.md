@@ -1,7 +1,5 @@
 # 0x11. Heap sort
-## Specializations - Interview Preparation ― Algorithms
 
-![tree](https://i.imgur.com/vVAASnm.png)
 ## Tasks
 
 Technical interview preparation:
